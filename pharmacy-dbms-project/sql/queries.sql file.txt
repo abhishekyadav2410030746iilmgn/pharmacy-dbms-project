@@ -1,0 +1,115 @@
+-- Customer Table
+CREATE TABLE Customer (
+    customer_id INT PRIMARY KEY,
+    customer_name VARCHAR(50),
+    phone VARCHAR(15)
+);
+
+-- Supplier Table
+CREATE TABLE Supplier (
+    supplier_id INT PRIMARY KEY,
+    supplier_name VARCHAR(50),
+    supplier_address VARCHAR(100)
+);
+
+-- Medicine Table
+CREATE TABLE Medicine (
+    medicine_id INT PRIMARY KEY,
+    medicine_name VARCHAR(50),
+    price DECIMAL(10,2),
+    stock INT,
+    supplier_id INT,
+    FOREIGN KEY (supplier_id) REFERENCES Supplier(supplier_id)
+);
+
+-- Sales Table
+CREATE TABLE Sales (
+    sale_id INT PRIMARY KEY,
+    customer_id INT,
+    medicine_id INT,
+    quantity INT,
+    sale_date DATE,
+    FOREIGN KEY (customer_id) REFERENCES Customer(customer_id),
+    FOREIGN KEY (medicine_id) REFERENCES Medicine(medicine_id)
+);
+
+
+-- =========================
+-- CUSTOMER TABLE DATA
+-- =========================
+INSERT INTO Customer VALUES (1,'Rahul','9876543210');
+INSERT INTO Customer VALUES (2,'Anita','9123456780');
+INSERT INTO Customer VALUES (3,'Amit','9988776655');
+INSERT INTO Customer VALUES (4,'Sneha','8899776655');
+INSERT INTO Customer VALUES (5,'Rohit','7788996655');
+INSERT INTO Customer VALUES (6,'Neha','7444333221');
+-- =========================
+-- SUPPLIER TABLE DATA
+-- =========================
+INSERT INTO Supplier VALUES (1,'ABC Pharma','9876543210','Delhi');
+INSERT INTO Supplier VALUES (2,'MediCare Ltd','9123456780','Mumbai');
+INSERT INTO Supplier VALUES (3,'HealthPlus','9012345678','Noida');
+INSERT INTO Supplier VALUES (4,'LifeCare Pharma','9988776655','Ghaziabad');
+INSERT INTO Supplier VALUES (5,'Wellness Drugs','8899776655','Pune');
+-- =========================
+-- MEDICINE TABLE DATA
+-- =========================
+INSERT INTO Medicine VALUES (101,'Paracetamol','Tablet',30.00,50,'2026-05-01',1);
+INSERT INTO Medicine VALUES (102,'Amoxicillin','Capsule',35.00,8,'2025-02-15',2);
+INSERT INTO Medicine VALUES (103,'Cough Syrup','Liquid',60.00,15,'2025-12-10',3);
+INSERT INTO Medicine VALUES (104,'Vitamin D','Supplement',80.00,5,'2024-11-20',1);
+INSERT INTO Medicine VALUES (105,'Ibuprofen','Tablet',25.00,30,'2026-01-10',2);
+INSERT INTO Medicine VALUES (106,'Azithromycin','Tablet',45.00,12,'2025-09-18',3);
+INSERT INTO Medicine VALUES (107,'Insulin','Injuction',150.00,20,'2025-07-25',4);
+INSERT INTO Medicine VALUES (108,'Antacid','Liquid',55.00,18,'2026-03-05',5);
+INSERT INTO Medicine VALUES (109,'Calcium','Supplement',70.00,9,'2025-08-30',4);
+INSERT INTO Medicine VALUES (110,'ORS','Powder',15.00,40,'2026-06-12',5);
+--=========================
+-- SALES TABLE DATA
+-- =========================
+INSERT INTO Sales VALUES (1,101,1,2,'2026-02-01');
+INSERT INTO Sales VALUES (2,102,2,1,'2026-02-05');
+INSERT INTO Sales VALUES (3,103,3,3,'2026-02-10');
+INSERT INTO Sales VALUES (4,104,4,1,'2026-02-12');
+INSERT INTO Sales VALUES (5,105,5,2,'2026-02-15');
+INSERT INTO Sales VALUES (6,106,6,1,'2026-02-18');
+INSERT INTO Sales VALUES (7,107,1,1,'2026-02-20');
+INSERT INTO Sales VALUES (8,108,2,2,'2026-02-22');
+INSERT INTO Sales VALUES (9,109,3,1,'2026-02-25');
+INSERT INTO Sales VALUES (10,110,4,3,'2026-02-28');
+
+
+-- =========================
+-- QUERIES
+-- =========================
+
+-- SELECT
+SELECT * FROM Medicine;
+
+-- SELECT with condition
+SELECT * FROM Medicine WHERE stock < 30;
+
+-- JOIN
+SELECT c.customer_name, m.medicine_name, s.quantity
+FROM Sales s
+JOIN Customer c ON s.customer_id = c.customer_id
+JOIN Medicine m ON s.medicine_id = m.medicine_id;
+
+-- AGGREGATE
+SELECT m.medicine_name, SUM(s.quantity) AS total_sold
+FROM Sales s
+JOIN Medicine m ON s.medicine_id = m.medicine_id
+GROUP BY m.medicine_name;
+
+-- SUBQUERY
+SELECT medicine_name FROM Medicine
+WHERE price > (SELECT AVG(price) FROM Medicine);
+
+-- INSERT
+INSERT INTO Customer VALUES (7,'Karan','7333222111');
+
+-- UPDATE
+UPDATE Medicine SET price = 30 WHERE medicine_id = 101;
+
+-- DELETE
+DELETE FROM Customer WHERE customer_id = 7;
